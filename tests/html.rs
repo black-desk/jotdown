@@ -107,3 +107,26 @@ fn indent_code_block() {
         Indentation::default(),
     );
 }
+
+#[test]
+fn multiple_line_unattached_attr() {
+    test_html!(
+        concat!(
+            "{ .a }\n", //
+        ),
+        concat!(
+            "\n", //
+        ),
+        Indentation::default(),
+    );
+    test_html!(
+        concat!(
+            "{ .a\n", //
+            " }\n",
+        ),
+        concat!(
+            "\n", //
+        ),
+        Indentation::default(),
+    );
+}
