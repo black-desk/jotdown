@@ -361,6 +361,27 @@ impl<'s> TreeParser<'s> {
                 lines
             };
 
+            // Check if this paragraph is actually a multi-line attribute
+            let (kind, span_start) = if matches!(kind, Kind::Paragraph) && lines.len() > 1 {
+                let first_line = &self.src[lines[0].clone()];
+                if first_line.starts_with('{') {
+                    let full_text: String = lines.iter().map(|sp| &self.src[sp.clone()]).collect();
+                    let v = attr::valid(&full_text);
+                    if v > 0 && full_text[v..].trim().is_empty() {
+                        (
+                            Kind::Atom(Atom::Attributes),
+                            span_start.start..(span_start.start + v),
+                        )
+                    } else {
+                        (kind, span_start)
+                    }
+                } else {
+                    (kind, span_start)
+                }
+            } else {
+                (kind, span_start)
+            };
+
             // close list if a non list item or a list item of new type appeared
             if let Some(OpenList {
                 ty_start,
