@@ -107,7 +107,8 @@ jobs:
       - name: "Fuzz"
         run: |
           echo core | sudo tee /proc/sys/kernel/core_pattern
-          AFL_TARGET=${{ matrix.target }} make afl_quick
+          AFL_TARGET=${{ matrix.target }} make afl_quick || \
+          AFL_TARGET=${{ matrix.target }} make afl_crash
   bench:
     name: Benchmark (stable)
     runs-on: ubuntu-latest

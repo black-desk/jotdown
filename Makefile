@@ -85,6 +85,9 @@ afl_crash:
 	failures="$$(find . -path './tmin/*') $$(find tests/afl/out -path '*/${AFL_TARGET_CRASH}/id*')"; \
 	for f in $$failures; do \
 		echo $$f; \
+		echo ==========; \
+		cat $$f; \
+		echo ==========; \
 		out=$$(cat $$f | (cd tests/afl && RUST_BACKTRACE=1 cargo run ${AFL_TARGET} 2>&1)); \
 		if [ $$? -ne 0 ]; then \
 			echo; \
